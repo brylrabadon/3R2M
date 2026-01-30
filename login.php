@@ -1,10 +1,10 @@
-<?php include 'header.php';
+<?php 
 session_start();
 include 'config.php';
 include 'header.php';
 
 if (isset($_POST['login'])) {
-    $email    = $_POST['email'];
+    $email    = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
 
     $query = "SELECT * FROM users WHERE email='$email'";
@@ -15,17 +15,44 @@ if (isset($_POST['login'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['name'] = $user['fullname'];
         header("Location: dashboard.php");
+        exit();
     } else {
-        echo "Invalid email or password";
+        $error = "Invalid email or password";
     }
 }
-include 'footer.php';
 ?>
 
-<form method="POST">
-    <h2>Login</h2>
-    <input type="email" name="email" placeholder="Email" required><br><br>
-    <input type="password" name="password" placeholder="Password" required><br><br>
-    <button name="login">Login</button>
-</form>
+<link rel="stylesheet" href="style.css">
 
+<div class="login-wrapper">
+    <div class="login-container">
+        <div class="login-image">
+            <img src="login.jpg" alt="Login Visual">
+        </div>
+
+        <div class="login-form-section">
+            <form method="POST">
+                <h2>Login</h2>
+                <?php if(isset($error)) echo "<p style='color:red; text-align:center; margin-bottom: 15px;'>$error</p>"; ?>
+                
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" name="login" class="login-btn">Login</button>
+
+                <div class="register-link" style="text-align: center; margin-top: 20px;">
+                    <p style="color: #636e72;">Don't have an account? <a href="register.php" style="color: #54b4f3; text-decoration: none; font-weight: bold;">Register</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<?php include 'footer.php'; ?>
